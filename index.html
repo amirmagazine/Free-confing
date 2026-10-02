@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b14">
+<title>V2Ray Control Center</title>
+<style>
+:root{--bg:#070912;--panel:#101522;--panel2:#0b0f18;--line:#252d40;--text:#f7f8ff;--muted:#9da8bd;--purple:#8b5cf6;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--orange:#f59e0b}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
+body{background:radial-gradient(circle at 15% 0,#28104c 0,transparent 32%),radial-gradient(circle at 100% 15%,#063d49 0,transparent 28%),var(--bg)}
+button,input,select,textarea{font:inherit}button{border:0;cursor:pointer}
+.app{max-width:1450px;margin:auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.logo{font-size:27px;font-weight:900;background:linear-gradient(90deg,#b18cff,#38e7ff);-webkit-background-clip:text;color:transparent}
+.header-actions{display:flex;gap:7px}
+.btn{padding:11px 14px;border-radius:11px;color:white;font-weight:800;background:#252c3d}
+.btn.primary{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}.btn.cyan{background:linear-gradient(135deg,#0284c7,#06b6d4)}.btn.green{background:linear-gradient(135deg,#059669,#10b981)}.btn.red{background:#7f1d1d}
+.layout{display:grid;grid-template-columns:230px 1fr;gap:16px}
+aside,.card,.stat{background:#101522e8;border:1px solid var(--line);border-radius:17px}
+aside{padding:13px;height:max-content;position:sticky;top:12px}
+.nav{display:grid;gap:5px}.nav button{background:transparent;color:#adb6c9;text-align:right;padding:12px;border-radius:10px}.nav button:hover,.nav button.active{background:#191e2d;color:#fff}
+main{min-width:0}.page{display:none}.page.active{display:block}.topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.topline h1{margin:0;font-size:25px}.muted{color:var(--muted);line-height:1.8}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.stat{padding:16px}.stat b{display:block;font-size:25px;color:#b99cff;margin-bottom:4px}.stat span{color:var(--muted);font-size:12px}
+.cards{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}.card{padding:17px;margin-top:12px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}input,select,textarea{width:100%;background:#080c14;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--purple)}textarea{min-height:210px;direction:ltr;text-align:left;font:12px monospace}
+.actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.notice{padding:12px;border-radius:11px;background:#171529;border:1px solid #3b3260;color:#d8d3f2;line-height:1.9}
+.progress{height:8px;background:#070a10;border-radius:20px;overflow:hidden;margin-top:10px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--cyan));transition:.2s}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:680px}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:right}.badge{font-size:11px;border-radius:20px;padding:4px 8px}.ok{background:#063d2d;color:#6ee7b7}.off{background:#401919;color:#fca5a5}
+.ipbox{max-height:310px;overflow:auto;direction:ltr;text-align:left;background:#080b11;border:1px solid var(--line);border-radius:11px;padding:7px;font:12px monospace}.ipbox div{padding:5px;border-bottom:1px solid #171c27}
+.url{direction:ltr;text-align:left}.qr{background:white;padding:8px;border-radius:10px;display:inline-block}.small{font-size:12px}.danger{color:#fca5a5}
+.toast{position:fixed;left:18px;bottom:18px;background:#151b2a;border:1px solid var(--line);border-radius:12px;padding:12px 15px;display:none;z-index:20}
+.hidden{display:none!important}
+@media(max-width:950px){.layout{grid-template-columns:1fr}aside{position:static}.nav{grid-template-columns:repeat(4,1fr)}.stats{grid-template-columns:repeat(3,1fr)}.cards{grid-template-columns:1fr}}
+@media(max-width:600px){.app{padding:10px}.nav{grid-template-columns:repeat(2,1fr)}.stats,.grid{grid-template-columns:1fr 1fr}header{align-items:flex-start;flex-direction:column}.topline{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div><div class="logo">⚡ V2RAY CONTROL CENTER PRO</div><div class="muted small">Single-file • GitHub Pages friendly • Local data</div></div>
+<div class="header-actions"><button class="btn" onclick="toggleTheme()">🌓</button><button class="btn green" onclick="backup()">💾 Backup</button></div>
+</header>
+
+<div class="layout">
+<aside>
+<div class="nav">
+<button class="active" data-page="dashboard">📊 داشبورد</button>
+<button data-page="builder">⚙️ Config Builder</button>
+<button data-page="ips">🌐 IP Manager</button>
+<button data-page="users">👥 Users</button>
+<button data-page="subs">🔗 Subscription</button>
+<button data-page="backup">💾 Backup</button>
+<button data-page="logs">📜 Logs</button>
+</div>
+</aside>
+
+<main>
+<section id="dashboard" class="page active">
+<div class="topline"><h1>داشبورد</h1><span class="muted">مدیریت کانفیگ و Subscription</span></div>
+<div class="stats">
+<div class="stat"><b id="stUsers">0</b><span>Users</span></div>
+<div class="stat"><b id="stSubs">0</b><span>Subscriptions</span></div>
+<div class="stat"><b id="stIPs">0</b><span>Unique IPs</span></div>
+<div class="stat"><b id="stCfg">0</b><span>Configs</span></div>
+<div class="stat"><b id="stBytes">0</b><span>Storage</span></div>
+</div>
+<div class="cards">
+<div class="card"><h2>🚀 عملیات سریع</h2><div class="actions"><button class="btn primary" onclick="page('builder')">ساخت کانفیگ</button><button class="btn cyan" onclick="page('ips')">دریافت IP</button><button class="btn green" onclick="page('subs')">Subscription</button></div></div>
+<div class="card"><h2>🛡️ وضعیت</h2><div class="notice">🗿 داده‌ها در مرورگر ذخیره می‌شوند. این فایل خودش Backend نیست و بدون سرور نمی‌تواند فایل جدیدی داخل GitHub Repository بنویسد.</div></div>
+</div>
+</section>
+
+<section id="builder" class="page">
+<div class="topline"><h1>⚙️ Config Builder</h1></div>
+<div class="card">
+<div class="grid">
+<div class="field"><label>Protocol</label><select id="protocol"><option value="vless">VLESS</option><option value="vmess">VMess</option></select></div>
+<div class="field"><label>Port</label><input id="port" type="number" min="1" max="65535" value="443"></div>
+<div class="field"><label>SNI</label><input id="sni" value="www.speedtest.net"></div>
+<div class="field"><label>تعداد کانفیگ</label><input id="amount" type="number" min="1" max="500" value="20"></div>
+<div class="field"><label>تعداد دستگاه</label><input id="devices" type="number" min="1" max="100" value="1"></div>
+<div class="field"><label>حجم</label><select id="volume"><option>10 GB</option><option>30 GB</option><option>50 GB</option><option>100 GB</option><option>250 GB</option><option>500 GB</option><option>Unlimited</option></select></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="generate()">🚀 Generate</button><button class="btn cyan" onclick="copy('configOut')">📋 Copy</button><button class="btn green" onclick="downloadConfigs()">⬇️ Download</button></div>
+<textarea id="configOut" placeholder="کانفیگ‌ها اینجا می‌آیند"></textarea>
+</div>
+<div class="card"><h2>🔐 امنیت</h2><div class="notice">UUID برای هر کانفیگ به‌صورت تصادفی ساخته می‌شود. این ابزار توکن GitHub، رمز عبور یا Secret را داخل کد قرار نمی‌دهد.</div></div>
+</section>
+
+<section id="ips" class="page">
+<div class="topline"><h1>🌐 IP Manager</h1></div>
+<div class="card">
+<div class="actions"><button class="btn primary" onclick="loadIPs()">📡 دریافت ۴ منبع</button><button class="btn cyan" onclick="selectEndpoints()">🧠 انتخاب Endpoint</button><button class="btn" onclick="shuffle()">🔀 Shuffle</button><button class="btn red" onclick="clearIPs()">🗑️ پاک‌کردن</button></div>
+<div class="progress"><div id="ipbar" class="bar"></div></div>
+<p class="muted small">Ping واقعی TCP برای صدها هزار IP از داخل مرورگر قابل اتکا نیست. این نسخه Ping ساختگی نشان نمی‌دهد.</p>
+</div>
+<div class="card"><div id="ipList" class="ipbox">هنوز IP دریافت نشده.</div></div>
+</section>
+
+<section id="users" class="page">
+<div class="topline"><h1>👥 Users</h1></div>
+<div class="card">
+<div class="grid"><div class="field"><label>نام</label><input id="userName"></div><div class="field"><label>دستگاه</label><input id="userDevices" type="number" value="1"></div><div class="field"><label>حجم</label><select id="userVolume"><option>10 GB</option><option>30 GB</option><option>50 GB</option><option>100 GB</option><option>Unlimited</option></select></div><div class="field"><label>اعتبار (روز)</label><input id="userDays" type="number" value="30"></div></div>
+<button class="btn green" onclick="addUser()">➕ ساخت User</button>
+</div>
+<div class="card table-wrap"><table class="table"><thead><tr><th>نام</th><th>دستگاه</th><th>حجم</th><th>انقضا</th><th>وضعیت</th><th></th></tr></thead><tbody id="userTable"></tbody></table></div>
+</section>
+
+<section id="subs" class="page">
+<div class="topline"><h1>🔗 Subscription</h1></div>
+<div class="card">
+<div class="notice">برای URL عمومی واقعی روی GitHub Pages، فایل باید واقعاً در Repository منتشر شود. این صفحه می‌تواند محتوای Subscription را تولید و دانلود کند، اما یک فایل HTML است و بدون Backend/GitHub Action نمی‌تواند خودش Repository را تغییر دهد.</div>
+<div class="grid">
+<div class="field"><label>Subscription ID</label><input id="subId" readonly></div>
+<div class="field"><label>URL پیشنهادی Pages</label><input id="subUrl" class="url" readonly></div>
+</div>
+<textarea id="subOut" placeholder="برای ساخت Subscription ابتدا کانفیگ تولید کن"></textarea>
+<div class="actions"><button class="btn primary" onclick="makeSub()">🔗 ساخت</button><button class="btn cyan" onclick="copy('subUrl')">📋 Copy URL</button><button class="btn green" onclick="downloadSub()">⬇️ Download</button></div>
+</div>
+</section>
+
+<section id="backup" class="page">
+<div class="topline"><h1>💾 Backup / Restore</h1></div>
+<div class="card"><button class="btn green" onclick="backup()">⬇️ Export JSON</button><input type="file" accept=".json" onchange="restore(event)"><button class="btn red" onclick="wipe()">🗑️ Reset</button><p class="muted">اطلاعات محلی پنل در LocalStorage نگهداری می‌شود.</p></div>
+</section>
+
+<section id="logs" class="page">
+<div class="topline"><h1>📜 Logs</h1></div>
+<div class="card"><textarea id="logs" readonly></textarea><button class="btn red" onclick="clearLogs()">پاک‌کردن لاگ</button></div>
+</section>
+</main>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const SOURCES=[
+"https://raw.githubusercontent.com/amirhazbavi/Iplist/refs/heads/main/generated_ips_1000000%20(1).txt",
+"https://raw.githubusercontent.com/amirhazbavi/Iplist/refs/heads/main/generated_ips_100000.txt",
+"https://raw.githubusercontent.com/amirhazbavi/Iplist/refs/heads/main/generated_ips_155165.txt",
+"https://raw.githubusercontent.com/amirhazbavi/Iplist/refs/heads/main/generated_ips_500000.txt"
+];
+let db=JSON.parse(localStorage.getItem("v2ray_pro_single")||'{"ips":[],"configs":[],"users":[],"subs":[],"logs":[]}');
+
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("v2ray_pro_single",JSON.stringify(db));stats();renderUsers();renderLogs()}
+function toast(t){$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
+function log(t){db.logs.unshift(new Date().toLocaleString("fa-IR")+" | "+t);db.logs=db.logs.slice(0,300);save()}
+function stats(){$("stUsers").textContent=db.users.length;$("stSubs").textContent=db.subs.length;$("stIPs").textContent=db.ips.length;$("stCfg").textContent=db.configs.length;$("stBytes").textContent=(new Blob([JSON.stringify(db)]).size/1024).toFixed(1)+" KB"}
+function page(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===id))}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>page(b.dataset.page));
+
+function validIP(x){let p=x.trim().split(".");return p.length===4&&p.every(v=>/^\d+$/.test(v)&&+v>=0&&+v<=255)}
+async function loadIPs(){
+ db.ips=[];$("ipList").textContent="در حال دریافت...";
+ for(let i=0;i<SOURCES.length;i++){
+  try{let r=await fetch(SOURCES[i],{cache:"no-store"});let t=await r.text();for(const line of t.split(/\r?\n/)){let ip=line.trim().split(":")[0];if(validIP(ip))db.ips.push(ip)}}catch(e){log("Source failed: "+(i+1))}
+  $("ipbar").style.width=((i+1)/SOURCES.length*100)+"%"
+ }
+ db.ips=[...new Set(db.ips)];renderIPs();log("Loaded "+db.ips.length+" unique IPv4 endpoints");toast("IPها دریافت شدند 🗿")
+}
+function renderIPs(){let a=db.ips.slice(0,5000);$("ipList").innerHTML=a.map(x=>"<div>"+esc(x)+"</div>").join("")+(db.ips.length>5000?"<div>... "+(db.ips.length-5000)+" مورد دیگر</div>":"")}
+function shuffle(){db.ips.sort(()=>Math.random()-.5);renderIPs();save()}
+function selectEndpoints(){if(!db.ips.length)return toast("اول IPها را دریافت کن");db.ips=db.ips.slice(0,Math.min(1000,db.ips.length));renderIPs();save();toast("Endpointهای انتخابی آماده شدند")}
+function clearIPs(){db.ips=[];renderIPs();save()}
+
+function uuid(){return crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{let r=Math.random()*16|0,v=c=="x"?r:(r&3|8);return v.toString(16)})}
+function generate(){
+ if(!db.ips.length)return toast("اول IPها را دریافت کن");
+ let p=+$("port").value,s=$("sni").value.trim(),n=Math.min(+$("amount").value||20,db.ips.length),proto=$("protocol").value;
+ if(p<1||p>65535||!s)return toast("Port یا SNI نامعتبر است");
+ let out=[];
+ for(let i=0;i<n;i++){let id=uuid(),ip=db.ips[i];
+  if(proto==="vless")out.push(`vless://${id}@${ip}:${p}?type=tcp&security=tls&encryption=none&sni=${encodeURIComponent(s)}#V2RAY-${i+1}`);
+  else{let o={v:"2",ps:`V2RAY-${i+1}`,add:ip,port:String(p),id,aid:"0",net:"tcp",type:"none",host:s,path:"/",tls:"tls",sni:s};out.push("vmess://"+btoa(unescape(encodeURIComponent(JSON.stringify(o)))))}
+ }
+ $("configOut").value=out.join("\n");db.configs=out;log("Generated "+out.length+" "+proto+" configs");toast("کانفیگ ساخته شد 🗿")
+}
+function b64(s){return btoa(unescape(encodeURIComponent(s)))}
+function makeSub(){
+ if(!$("configOut").value)generate();if(!$("configOut").value)return;
+ let id=uuid(),repo=location.pathname.split("/").filter(Boolean)[0]||"REPOSITORY",user=location.hostname.split(".")[0]||"USERNAME";
+ $("subId").value=id;$("subUrl").value=`https://${user}.github.io/${repo}/sub/${id}.txt`;$("subOut").value=b64($("configOut").value);
+ db.subs.push({id,url:$("subUrl").value,created:new Date().toISOString()});log("Subscription generated");toast("Subscription ساخته شد")
+}
+function downloadConfigs(){let x=$("configOut").value;if(!x)return;download(x,"configs.txt","text/plain")}
+function downloadSub(){let x=$("subOut").value;if(!x)return toast("اول Subscription بساز");download(x,"subscription.txt","text/plain")}
+function download(c,n,t){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click()}
+function copy(id){let x=$(id).value;if(!x)return;navigator.clipboard.writeText(x);toast("کپی شد")}
+function addUser(){let n=$("userName").value.trim();if(!n)return toast("نام را وارد کن");let d=new Date();d.setDate(d.getDate()+(+$("userDays").value||30));db.users.push({id:uuid(),name:n,devices:+$("userDevices").value||1,volume:$("userVolume").value,expires:d.toISOString(),active:true});log("User created: "+n);toast("کاربر ساخته شد")}
+function renderUsers(){$("userTable").innerHTML=db.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${u.devices}</td><td>${u.volume}</td><td>${new Date(u.expires).toLocaleDateString("fa-IR")}</td><td><span class="badge ${u.active?"ok":"off"}">${u.active?"فعال":"غیرفعال"}</span></td><td><button class="btn" onclick="toggleUser('${u.id}')">تغییر</button><button class="btn red" onclick="delUser('${u.id}')">حذف</button></td></tr>`).join("")}
+function toggleUser(id){let u=db.users.find(x=>x.id===id);if(u){u.active=!u.active;log("User status changed");save()}}
+function delUser(id){db.users=db.users.filter(x=>x.id!==id);log("User deleted");save()}
+function backup(){download(JSON.stringify(db,null,2),"v2ray-panel-backup.json","application/json")}
+function restore(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();toast("Restore موفق")}catch{toast("JSON نامعتبر است")}};r.readAsText(f)}
+function wipe(){if(confirm("تمام داده‌های محلی پاک شوند؟")){db={ips:[],configs:[],users:[],subs:[],logs:[]};save()}}
+function renderLogs(){$("logs").value=db.logs.join("\n")}
+function clearLogs(){db.logs=[];save()}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function toggleTheme(){document.body.style.filter=document.body.style.filter?"":"brightness(1.08)"}
+stats();renderUsers();renderLogs();
+</script>
+</body>
+</html>
